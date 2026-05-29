@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.env
+*.log
+.DS_Store
+server/node_modules/
+server/.env
+server/inquiries/
+server/feedback/
+.claude/
