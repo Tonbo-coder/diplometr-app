@@ -311,10 +311,12 @@ export default function Home() {
         await Clipboard.setStringAsync(emailTextNoSig);
         window.alert("Email bez podpisu zkopírován jako prostý text.");
       }
+      void persistFeedbackIfApplicable();
       return;
     }
     await Clipboard.setStringAsync(emailTextNoSig);
     Alert.alert("Hotovo", "Email bez podpisu zkopírován do schránky.");
+    void persistFeedbackIfApplicable();
   };
 
   const persistFeedbackIfApplicable = async () => {
