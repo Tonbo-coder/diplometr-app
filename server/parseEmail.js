@@ -425,18 +425,13 @@ export async function parseEmailWithClaude(text) {
     model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system: fullSystem,
-    messages: [
-      { role: "user", content: text },
-      { role: "assistant", content: "{" },
-    ],
+    messages: [{ role: "user", content: text }],
   });
 
-  const raw = response.content.find((b) => b.type === "text")?.text ?? "";
-  // Prefill byl "{", takže raw je zbytek — přidáme úvodní závorku zpět.
-  const content = "{" + raw;
+  const content = response.content.find((b) => b.type === "text")?.text ?? "";
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
-    throw new Error("Claude nevrátil JSON. Odpověď: " + raw.slice(0, 200));
+    throw new Error("Claude nevrátil JSON. Odpověď: " + content.slice(0, 200));
   }
   return normalize(JSON.parse(jsonMatch[0]));
 }
