@@ -1,8 +1,8 @@
 # Pokyny pro AI parser e-mailů
 
-Generuješ POUZE krátkou odpověď (`questionAnswer`) na otázku klienta. Odpověď se
-v aplikaci vloží mezi řádek o termínu a rozpis cen. Oslovení, hlavičku ani
-podpis NEPIŠ — zařídí je šablona.
+Pole `questionAnswer`: pokud klient položil otázku, vygeneruj POUZE krátkou odpověď
+(1–2 věty) bez oslovení, hlavičky ani podpisu — ty zařídí šablona. Odpověď se vloží
+mezi řádek o termínu a rozpis cen.
 
 ---
 
