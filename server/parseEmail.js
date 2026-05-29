@@ -408,7 +408,7 @@ export async function refineAnswerWithClaude(clientEmail, previousAnswer, hint) 
   ].join("\n");
 
   const response = await c.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-sonnet-4-6",
     max_tokens: 512,
     system: fullSystem,
     messages: [{ role: "user", content: userMessage }],
@@ -422,7 +422,7 @@ export async function parseEmailWithClaude(text) {
   const fullSystem = buildSystemPrompt(SYSTEM_PROMPT);
 
   const response = await c.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-sonnet-4-6",
     max_tokens: 1024,
     system: fullSystem,
     messages: [
