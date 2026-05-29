@@ -21,7 +21,7 @@ import {
 } from "@/lib/api";
 import { PROJECT_BY_SIGNATURE, TABIDOO_PROJECTS, SIGNATURE_COLORS } from "@/lib/projects";
 import { computeBreakdown } from "@/lib/calculator";
-import { generateEmail, toHtml, toPlainText, type EmailDoc } from "@/lib/emailTemplate";
+import { generateEmail, signatures, toHtml, toPlainText, type EmailDoc } from "@/lib/emailTemplate";
 import type {
   Delivery,
   Metrics,
@@ -196,6 +196,12 @@ export default function Home() {
   );
   const emailText = useMemo(() => toPlainText(emailDoc), [emailDoc]);
   const emailHtml = useMemo(() => toHtml(emailDoc), [emailDoc]);
+  const emailDocNoSig: EmailDoc = useMemo(
+    () => emailDoc.slice(0, emailDoc.length - signatures[sel.signature].length),
+    [emailDoc, sel.signature],
+  );
+  const emailTextNoSig = useMemo(() => toPlainText(emailDocNoSig), [emailDocNoSig]);
+  const emailHtmlNoSig = useMemo(() => toHtml(emailDocNoSig), [emailDocNoSig]);
 
   const handlePickedFile = async (asset: PickedAsset) => {
     setError(null);
@@ -284,6 +290,31 @@ export default function Home() {
     await Clipboard.setStringAsync(emailText);
     Alert.alert("Hotovo", "Email zkopírován do schránky.");
     void persistFeedbackIfApplicable();
+  };
+
+  const copyEmailNoSig = async () => {
+    if (!emailTextNoSig) return;
+    if (Platform.OS === "web") {
+      try {
+        const nav: any = navigator;
+        if (nav.clipboard?.write && typeof ClipboardItem !== "undefined") {
+          const item = new ClipboardItem({
+            "text/html": new Blob([emailHtmlNoSig], { type: "text/html" }),
+            "text/plain": new Blob([emailTextNoSig], { type: "text/plain" }),
+          });
+          await nav.clipboard.write([item]);
+        } else {
+          await nav.clipboard.writeText(emailTextNoSig);
+        }
+        window.alert("Email bez podpisu zkopírován do schránky.");
+      } catch {
+        await Clipboard.setStringAsync(emailTextNoSig);
+        window.alert("Email bez podpisu zkopírován jako prostý text.");
+      }
+      return;
+    }
+    await Clipboard.setStringAsync(emailTextNoSig);
+    Alert.alert("Hotovo", "Email bez podpisu zkopírován do schránky.");
   };
 
   const persistFeedbackIfApplicable = async () => {
@@ -718,6 +749,9 @@ export default function Home() {
             <View style={{ flexDirection: "row", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
               <View style={{ flex: 1, minWidth: 140 }}>
                 <Button label="Kopírovat email" onPress={copyEmail} />
+              </View>
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Button label="Bez podpisu" onPress={copyEmailNoSig} variant="secondary" />
               </View>
               <View style={{ flex: 1, minWidth: 140 }}>
                 <Button
