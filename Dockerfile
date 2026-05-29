@@ -8,6 +8,7 @@ RUN npm ci
 COPY app ./app
 COPY components ./components
 COPY lib ./lib
+COPY assets ./assets
 COPY app.json tsconfig.json ./
 RUN npx expo export -p web
 
